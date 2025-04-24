@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Photo extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id', 'image', 'category'];
+    protected $fillable = ['user_id', 'image', 'category', 'comments_enabled',];
 
     public function user()
     {

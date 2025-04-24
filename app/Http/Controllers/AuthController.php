@@ -28,7 +28,7 @@ class AuthController extends Controller
         ]);
 
         // KEMBALI KE LOGINFORM SETELAH REGISTER
-        return redirect()->route('loginForm')->with('success', 'Registrasi berhasil! Silahkan login.');
+        return redirect('/')->with('openLogin', true)->with('success', 'Registrasi berhasil! Silahkan login!');
     }
 
     public function loginForm() {
@@ -44,7 +44,7 @@ class AuthController extends Controller
         $user = User::where('email', $request->email)->first();
 
         if (!$user) {
-            return redirect()->back()->withInput()->with('unregistered', 'Email tidak ditemukan. Silakan daftar terlebih dahulu.');
+            return redirect('/')->withInput()->with('openRegister', true)->with('error', 'Email tidak ditemukan. Silakan daftar terlebih dahulu.');
         }        
 
         if (Auth::attempt($credentials)) {

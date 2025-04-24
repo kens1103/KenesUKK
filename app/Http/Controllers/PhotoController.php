@@ -13,7 +13,7 @@ class PhotoController extends Controller
 {
     public function index(Request $request)
     {
-        $categories = Category::all();
+        $categories = \App\Models\Category::all();
         $category = $request->input('category');
         $query = $request->input('query');
         $photoQuery = Photo::with('category', 'user')->latest();
@@ -36,6 +36,7 @@ class PhotoController extends Controller
         $request->validate([
             'image' => 'required|image',
             'category' => 'required|exists:categories,category',
+            'comments_enabled' => 'required|boolean',
         ]);
 
         $imageName = time().'.'.$request->image->extension();
@@ -45,6 +46,7 @@ class PhotoController extends Controller
             'user_id' => Auth()->id(),
             'image' => $imageName,
             'category' => $request->category,
+            'comments_enabled' => $request->comments_enabled,
         ]);
 
         return redirect()->route('galeri')->with('success', 'Foto berhasil diunggah');
@@ -148,7 +150,7 @@ class PhotoController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
+        $categories = \App\Models\Category::all();
         return view('photos.create', compact('categories'));
     }
 
@@ -164,7 +166,7 @@ class PhotoController extends Controller
             return back()->with('success', 'Reaksi dihapus');
         }
 
-        CommentLike::create([
+        \App\Models\CommentLike::create([
             'comment_id' => $id,
             'user_id' => $user->id,
         ]);

@@ -9,7 +9,7 @@
     <style>
         .hero {
             position: relative;
-            background-image: url('/uploads/1.jpeg');
+            background-image: url('/uploads/2.jpeg');
             background-size: cover;
             background-position: center center;
             background-repeat: no-repeat;
@@ -119,17 +119,17 @@
         </div>
 
         <h1 class="mb-5" style="color: white;">Jelajahi dan Unggah Foto Favorit Anda!</h1>
-        <form action="{{ route('galeri.search') }}" method="GET" class="d-flex justify-content-center align-items-center w-50">
-            <select name="category" class="form-select w-25 me-2">
-                <option value="">Pilih Kategori</option>
-                @foreach ($categories as $category)
-                    <option value="{{ $category->category }}" {{ request('category') == $category->category ? 'selected' : '' }}>
-                        {{ $category->category }}
-                    </option>
-                @endforeach
-            </select>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+            <form action="{{ route('galeri.search') }}" method="GET" class="d-flex justify-content-center align-items-center w-50">
+                <select name="category" class="form-select w-25 me-2">
+                    <option value="">Pilih Kategori</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category->category }}" {{ request('category') == $category->category ? 'selected' : '' }}>
+                                {{ $category->category }}
+                            </option>
+                        @endforeach
+                </select>
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
     </div>
 
     <div class="container my-5 text-center">
@@ -139,215 +139,237 @@
 
     <div class="container gallery-container">
         <div class="masonry">
-        @foreach($photos as $photo)
-            <div class="masonry-item">
-                <div class="card shadow-sm">
-                    <a href="{{ route('photo.show', $photo->id) }}">
-                    <img src="{{ asset('uploads/' . $photo->image) }}" 
-                        data-src="{{ asset('uploads/' . $photo->image) }}" 
-                        class="card-img-top preview-img" alt="Foto">
-                    </a>
+            @foreach($photos as $photo)
+                <div class="masonry-item">
+                    <div class="card shadow-sm">
+                        <a href="{{ route('photo.show', $photo->id) }}">
+                        <img src="{{ asset('uploads/' . $photo->image) }}" 
+                            data-src="{{ asset('uploads/' . $photo->image) }}" 
+                            class="card-img-top preview-img" alt="Foto">
+                        </a>
+                    </div>
                 </div>
-            </div>
             @endforeach
         </div>
     </div>
 
-<!-- MODAL FOTO -->
-<div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="photoModalLabel">Pratinjau Foto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <img id="modalImage" src="" class="img-fluid" alt="Preview">
+    <!-- MODAL FOTO -->
+    <div class="modal fade" id="photoModal" tabindex="-1" aria-labelledby="photoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="photoModalLabel">Pratinjau Foto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="modalImage" src="" class="img-fluid" alt="Preview">
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- TOMBOL TAMBAH FOTO -->
-@auth
-<button class="floating-button" data-bs-toggle="modal" data-bs-target="#uploadModal">+</button>
-@endauth
+    <!-- TOMBOL TAMBAH FOTO -->
+    @auth
+    <button class="floating-button" data-bs-toggle="modal" data-bs-target="#uploadModal">+</button>
+    @endauth
 
-<!-- MODAL TAMBAH FOTO -->
-<div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="uploadModalLabel">Tambah Foto</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    <!-- MODAL TAMBAH FOTO -->
+    <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadModalLabel">Tambah Foto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('photos.store') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="image" class="form-label">Pilih Foto</label>
+                            <input type="file" class="form-control" id="image" name="image" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="category" class="form-label">Kategori</label>
+                            <select name="category" class="form-select" required>
+                                <option value="">Pilih Kategori</option>
+                                    @foreach ($categories as $category)
+                                        <option value="{{ $category->category }}">{{ $category->category }}</option>
+                                    @endforeach
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comments_enabled" class="form-label">Komentar</label>
+                            <select name="comments_enabled" class="form-select" required>
+                                <option value="1" {{ old('comments_enabled') == '1' ? 'selected' : '' }}>Aktifkan Komentar</option>
+                                <option value="0" {{ old('comments_enabled') == '0' ? 'selected' : '' }}>Nonaktifkan Komentar</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-success w-100">Upload</button>
+                    </form>
+                </div>
             </div>
-            <div class="modal-body">
-            <form action="{{ route('photos.store') }}" method="POST" enctype="multipart/form-data">
+        </div>
+    </div>
+
+    <!-- MODAL REGISTER -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="registerModalLabel">Register</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ route('register') }}">
                     @csrf
-                    <div class="mb-3">
-                        <label for="image" class="form-label">Pilih Foto</label>
-                        <input type="file" class="form-control" id="image" name="image" required>
+                        <div class="modal-body">
+                            @if(session('success'))
+                                <script>
+                                    var registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+                                    var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                                    registerModal.hide();  // NUTUP MODAL REGISTER
+                                    loginModal.show();     // BUKA MODAL LOGIN
+                                </script>
+                            @endif
+                            @if(session('error'))
+                                <div class="alert alert-danger">{{ session('error') }}</div>
+                                <script>
+                                    var Modal = new bootstrap.Modal(document.getElementById('registerModal'));
+                                    registerModal.show();
+                                </script>
+                            @endif
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nama</label>
+                                <input type="name" class="form-control" name="name" required autofocus>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" required autofocus>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Register</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    <!-- MODAL LOGIN -->
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <div class="modal-body">
+                        @if(session('error'))
+                            <div class="alert alert-danger">{{ session('error') }}</div>
+                        @endif
+                        @if(session('error'))
+                            <script>
+                                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                                loginModal.show();
+                            </script>
+                        @endif
+                            <div class="mb-3">
+                                <label for="email" class="form-label">Email</label>
+                                <input type="email" class="form-control" name="email" required autofocus>
+                            </div>
+                            <div class="mb-3">
+                                <label for="password" class="form-label">Password</label>
+                                <input type="password" class="form-control" name="password" required>
+                            </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="category" class="form-label">Kategori</label>
-                        <select name="category" class="form-select" required>
-                            <option value="">Pilih Kategori</option>
-                            @foreach ($categories as $category)
-                                <option value="{{ $category->category }}">{{ $category->category }}</option>
-                            @endforeach
-                        </select>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">Login</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                     </div>
-                    <button type="submit" class="btn btn-success w-100">Upload</button>
                 </form>
             </div>
         </div>
     </div>
-</div>
 
-<!-- MODAL REGISTER -->
-<div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="registerModalLabel">Register</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form method="POST" action="{{ route('register') }}">
-        @csrf
-        <div class="modal-body">
-        @if(session('success'))
-            <script>
-                var registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
-                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                registerModal.hide();  // NUTUP MODAL REGISTER
-                loginModal.show();     // BUKA MODAL LOGIN
-            </script>
-        @endif
-          @if(session('error'))
-            <script>
-                var Modal = new bootstrap.Modal(document.getElementById('registerModal'));
-                registerModal.show();
-            </script>
-            @endif
-          <div class="mb-3">
-            <label for="name" class="form-label">Nama</label>
-            <input type="name" class="form-control" name="name" required autofocus>
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" required autofocus>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" name="password" required>
-        </div>
-        </div>
-        <div class="modal-footer">
-            <button type="submit" class="btn btn-primary">Register</button>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL LOGIN -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="loginModalLabel">Login</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form method="POST" action="{{ route('login') }}">
-        @csrf
-        <div class="modal-body">
-          @if(session('error'))
-              <div class="alert alert-danger">{{ session('error') }}</div>
-          @endif
-          @if(session('error'))
-            <script>
-                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
-                loginModal.show();
-            </script>
-            @endif
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" name="email" required autofocus>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" name="password" required>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-primary">Login</button>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL LOGOUT -->
-<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
-      </div>
-      <div class="modal-body">
-        Apakah Anda yakin ingin logout?
-      </div>
-      <div class="modal-footer">
-        <form action="{{ route('logout') }}" method="POST">
-            @csrf
-            <button type="submit" class="btn btn-danger">Ya, Logout</button>
-        </form>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL BERHASIL LOGIN -->
-@if(session('success'))
-<div class="position-fixed top-0 end-0 p-3" style="z-index: 1055;">
-    <div id="loginToast" class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex">
-            <div class="toast-body">
-                {{ session('success') }}
+    <!-- MODAL LOGOUT -->
+    <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="logoutModalLabel">Konfirmasi Logout</h5>
+                </div>
+                <div class="modal-body">
+                    Apakah Anda yakin ingin logout?
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Ya, Logout</button>
+                    </form>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
-@endif
 
-<!-- SCRIPT MODAL BERHASIL LOGIN -->
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const toastEl = document.getElementById('loginToast');
-        if (toastEl) {
-            const toast = new bootstrap.Toast(toastEl, {
-                delay: 2000
-            });
-            toast.show();
-        }
-    });
-</script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const previewImages = document.querySelectorAll(".preview-img");
-        const modalImage = document.getElementById("modalImage");
+    <!-- MODAL BERHASIL LOGIN -->
+    @if(session('success'))
+        <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055;">
+            <div id="loginToast" class="toast align-items-center text-bg-success border-0 show" role="alert" aria-live="assertive" aria-atomic="true">
+                <div class="d-flex">
+                    <div class="toast-body">
+                        {{ session('success') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
 
-        previewImages.forEach(image => {
-            image.addEventListener("click", function() {
-                modalImage.src = this.getAttribute("data-src");
+    <!-- SCRIPT MODAL BERHASIL LOGIN -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const toastEl = document.getElementById('loginToast');
+            if (toastEl) {
+                const toast = new bootstrap.Toast(toastEl, {
+                    delay: 2000
+                });
+                toast.show();
+            }
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const previewImages = document.querySelectorAll(".preview-img");
+            const modalImage = document.getElementById("modalImage");
+
+            previewImages.forEach(image => {
+                image.addEventListener("click", function() {
+                    modalImage.src = this.getAttribute("data-src");
+                });
             });
         });
-    });
-</script>
+    </script>
+    <!-- BUKA MODAL REGISTER KETIKA ADA EMAIL YANG BELUM TERDAFTAR MENCOBA LOGIN -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            @if(session('openRegister'))
+                var registerModal = new bootstrap.Modal(document.getElementById('registerModal'));
+                registerModal.show();
+            @endif
+
+            @if(session('openLogin'))
+                var loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+                loginModal.show();
+            @endif
+        });
+    </script>
 
 </body>
 </html>

@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PhotoController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserDashboardController;
+use App\Http\Controllers\UserController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -50,3 +52,4 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/dashboard', [UserDashboardController::class, 'index'])->middleware('auth')->name('dashboard');
 Route::delete('/photos/{id}', [UserDashboardController::class, 'destroyPhoto'])->name('photos.destroy');
 Route::delete('/comments/{id}', [UserDashboardController::class, 'destroyComment'])->name('comments.destroy');
+Route::get('/users', [UserController::class, 'index'])->name('users.index');

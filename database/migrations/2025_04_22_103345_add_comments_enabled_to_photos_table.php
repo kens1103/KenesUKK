@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role')->default('user');          
+        Schema::table('photos', function (Blueprint $table) {
+            $table->boolean('comments_enabled')->default(true);
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            //
+        Schema::table('photos', function (Blueprint $table) {
+            $table->dropColumn('comments_enabled');
         });
     }
 };
